@@ -23,5 +23,22 @@ module.exports = {
         })
 
     return response.json({ id });
+    },
+
+    async delete(request, response) {
+        const { id } = request.params;
+        
+        const ongs = await connection('ongs')
+        .where('id', id)
+        .select('id')
+        .first();
+
+        if(ongs.id != id){
+            return response.status(401).json({ error: 'Ong not deleted.'});
+        }
+        
+        await connection('ongs').where('id', id).delete();
+
+        return response.status(204).send();
     }
 };
